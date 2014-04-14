@@ -15,14 +15,16 @@ from pyparsing import (
     Forward,
     ParserElement,
     CharsNotIn,
+    QuotedString,
     quotedString,
+    nestedExpr,
     removeQuotes,
 )
-from pyparsing import (alphas, alphanums, cppStyleComment, )
+from pyparsing import (printables, alphanums, cppStyleComment, )
 from pyparsing import (ParseException, )
 
 
-BASE_STRINGS = alphanums + "-"
+BASE_STRINGS = alphanums + "-" + "_"
 BASE_WORDS = Word(BASE_STRINGS)
 QUOTED_WORDS = quotedString.addParseAction(removeQuotes)
 END_OF_WORDS = WordEnd(BASE_STRINGS)
@@ -32,10 +34,15 @@ LineSeparator = Suppress(Literal(';')).setResultsName('separator_token')
 Comments = Optional(cppStyleComment.setResultsName('comment'))
 
 NameDefinitions = BASE_WORDS.setResultsName('name')
-ValDefinitions = OneOrMore(QUOTED_WORDS ^ BASE_WORDS).setResultsName('value')
+ValDefinitions = OneOrMore(
+    QUOTED_WORDS ^
+    BASE_WORDS ^
+    nestedExpr(opener='{', closer='}')
+).setResultsName('value')
 VarDefinitions = Group(
     NameDefinitions + END_OF_WORDS.copy() + ValDefinitions
 )
+OnlyVar = Word(printables)
 
 
 # NestedVar = nestedExpr(opener='{', closer='}', content=VarDefinitions)
@@ -51,29 +58,54 @@ NestedVar << (
     Suppress(closer)
 )
 OptionsDefinitions = Group(
-    Keyword('options').setResultsName('name') + NestedVar.setResultsName('values')
+    Keyword('options').setResultsName('name') +
+    NestedVar.copy().setResultsName('values')
 )
 
+ZoneDefinitions = Group(
+    Keyword('zone').setResultsName('name') +
+    QUOTED_WORDS.setResultsName('zone_name') +
+    NestedVar.copy().setResultsName('values')
+)
 
 Expressions = OneOrMore(
-    VarDefinitions | OptionsDefinitions
+    ZoneDefinitions |
+    OptionsDefinitions |
+    VarDefinitions
 )
 
 
 
 if __name__ == '__main__':
+    from pyparsing import ParseResults
     # texts = io.open('', 'rt').read().replace('\n', '')
     # print(texts)
     p = OneOrMore(
         Comments +
-        (VarDefinitions | OptionsDefinitions) +
+        Expressions +
         LineSeparator
     )
-    c = open('./testbase.conf').read()
+    c = open('./named.conf').read()
     # parseFile('./testbase.conf')
     result = p.parseString(c)
-    print(result)
-    # print(result[3]['name'])
+    result = p.parseString(c, parseAll=True)
+    for r in [r for r in result if isinstance(r, ParseResults)]:
+        print('- = - = - = - = - = -')
+        name = r['name']
+        print('section: {}'.format(name))
+        if name == 'options':
+            values = r['values']
+            print('values: {}'.format(r['values']))
+            for v in [v for v in values if isinstance(v, ParseResults)]:
+                print('  {}: {}'.format(v['name'], v['value']))
+        elif name == 'zone':
+            print('zone_name: {}'.format(r['zone_name']))
+            values = r['values']
+            print('values: {}'.format(r['values']))
+            for v in [v for v in values if isinstance(v, ParseResults)]:
+                print('  {}: {}'.format(v['name'], v['value']))
+        else:
+            print('value: {}'.format(r['value']))
     # print(result[3]['values'])
     # print(result[3]['values'][0]['name'])
     # print(result[3]['values'][0]['value'])
