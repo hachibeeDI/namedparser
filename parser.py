@@ -18,6 +18,7 @@ from pyparsing import (
     QuotedString,
     quotedString,
     nestedExpr,
+    delimitedList,
     removeQuotes,
 )
 from pyparsing import (printables, alphanums, cppStyleComment, )
@@ -32,21 +33,20 @@ END_OF_WORDS = WordEnd(BASE_STRINGS)
 
 LineSeparator = Suppress(Literal(';')).setResultsName('separator_token')
 Comments = Optional(cppStyleComment.setResultsName('comment'))
+opener, closer = Literal('{'), Literal('}')
 
 NameDefinitions = BASE_WORDS.setResultsName('name')
 ValDefinitions = OneOrMore(
     QUOTED_WORDS ^
     BASE_WORDS ^
-    nestedExpr(opener='{', closer='}')
+    QuotedString('{', multiline=True, endQuoteChar='}').setParseAction(lambda t: t[0].strip())
 ).setResultsName('value')
 VarDefinitions = Group(
-    NameDefinitions + END_OF_WORDS.copy() + ValDefinitions
+    NameDefinitions + ValDefinitions
 )
-OnlyVar = Word(printables)
 
 
 # NestedVar = nestedExpr(opener='{', closer='}', content=VarDefinitions)
-opener, closer = Literal('{'), Literal('}')
 NestedVar = Forward()
 _NestedContent = (
     VarDefinitions +
@@ -85,7 +85,7 @@ if __name__ == '__main__':
         Expressions +
         LineSeparator
     )
-    c = open('./named.conf').read()
+    c = open('./testbase.conf').read()
     # parseFile('./testbase.conf')
     result = p.parseString(c)
     result = p.parseString(c, parseAll=True)
