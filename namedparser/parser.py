@@ -74,57 +74,8 @@ Expressions = OneOrMore(
     VarDefinitions
 )
 
-
-
-if __name__ == '__main__':
-    from pyparsing import ParseResults
-    # texts = io.open('', 'rt').read().replace('\n', '')
-    # print(texts)
-    p = OneOrMore(
+Parser = OneOrMore(
         Comments +
         Expressions +
         LineSeparator
     )
-    c = open('./testbase.conf').read()
-    # parseFile('./testbase.conf')
-    result = p.parseString(c)
-    result = p.parseString(c, parseAll=True)
-    for r in [r for r in result if isinstance(r, ParseResults)]:
-        print('- = - = - = - = - = -')
-        name = r['name']
-        print('section: {}'.format(name))
-        if name == 'options':
-            values = r['values']
-            print('values: {}'.format(r['values']))
-            for v in [v for v in values if isinstance(v, ParseResults)]:
-                print('  {}: {}'.format(v['name'], v['value']))
-        elif name == 'zone':
-            print('zone_name: {}'.format(r['zone_name']))
-            values = r['values']
-            print('values: {}'.format(r['values']))
-            for v in [v for v in values if isinstance(v, ParseResults)]:
-                print('  {}: {}'.format(v['name'], v['value']))
-        else:
-            print('value: {}'.format(r['value']))
-    # print(result[3]['values'])
-    # print(result[3]['values'][0]['name'])
-    # print(result[3]['values'][0]['value'])
-    # print(result[3]['values'][1])
-    # print(result[3]['values'][1])
-
-
-# def hollerith():
-#     '''Returns a parser for a FORTRAN Hollerith character constant.
-#     '''
-#     intExpr = pp.Word(pp.nums).setParseAction(lambda t: int(t[0]))
-#     stringExpr = pp.Forward()
-#     def countedParseAction(toks):
-#         '''Closure to define the content of stringExpr.
-#         '''
-#         n = toks[0]
-#         contents = pp.CharsNotIn('', exact=n)
-#         stringExpr << (pp.Suppress(pp.CaselessLiteral('H')) + contents)
-#         return None
-#
-#     intExpr.addParseAction(countedParseAction)
-#     return (pp.Suppress(intExpr) + stringExpr)
