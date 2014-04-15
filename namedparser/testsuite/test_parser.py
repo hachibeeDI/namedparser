@@ -4,6 +4,7 @@ from __future__ import (print_function, division, absolute_import, unicode_liter
 import unittest
 
 from namedparser import parser
+from namedparser import structures
 
 
 class TestTest(unittest.TestCase):
@@ -13,6 +14,7 @@ class TestTest(unittest.TestCase):
             directory "/var/na/named";
             aaa master;
             check-names slave ignore;
+            include "named.local.conf";
         '''
         result = parser.Parser.parseString(text)
         self.assertEqual(result[0].name, 'directory')
@@ -21,6 +23,10 @@ class TestTest(unittest.TestCase):
         self.assertEqual(result[1].value.asList(), ['master'])
         self.assertEqual(result[2].name, 'check-names')
         self.assertEqual(result[2].value.asList(), ['slave', 'ignore'])
+        include_expression = result[3]
+        self.assertTrue(isinstance(include_expression, structures.Include))
+        self.assertEqual(include_expression['name'], 'include')
+        self.assertEqual(str(include_expression), 'include "named.local.conf";')
 
     def test_option_definition(self):
         text = '''

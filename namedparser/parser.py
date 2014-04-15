@@ -21,8 +21,11 @@ from pyparsing import (
     delimitedList,
     removeQuotes,
 )
-from pyparsing import (printables, alphanums, cppStyleComment, )
+from pyparsing import (alphanums, cppStyleComment, )
+from pyparsing import (ParseResults, )
 from pyparsing import (ParseException, )
+
+from .structures import StructuresDetection
 
 
 BASE_STRINGS = alphanums + "-" + "_"
@@ -41,9 +44,19 @@ ValDefinitions = OneOrMore(
     BASE_WORDS ^
     QuotedString('{', multiline=True, endQuoteChar='}').setParseAction(lambda t: t[0].strip())
 ).setResultsName('value')
+
+
+def expression_type_detection(st, location_of__matching_substring, toks):
+    var = toks[0]
+    cls = StructuresDetection.get(var['name'], None)
+    if cls is None:
+        return toks
+    v = cls(var)
+    return v
+
 VarDefinitions = Group(
     NameDefinitions + ValDefinitions
-)
+).setParseAction(expression_type_detection)
 
 
 # NestedVar = nestedExpr(opener='{', closer='}', content=VarDefinitions)
