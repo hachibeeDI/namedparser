@@ -1,8 +1,40 @@
+# -*- coding: utf-8 -*-
+from __future__ import (print_function, division, absolute_import, unicode_literals, )
+
 from os import path
-from setuptools import setup
+from setuptools import setup, Command
+
+
+BASE_DIR = path.dirname(__file__)
+
+
+class run_test(Command):
+    description = "run unittests"
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import sys
+        try:
+            from unittest import (TestLoader, TextTestRunner, )
+        except ImportError:
+            try:
+                from unittest2 import (TestLoader, TextTestRunner, )
+            except ImportError:
+                print('You should use the python version above 2.7 or install unittest2.')
+                sys.exit(1)
+        path_to_tests = path.join('namedparser', 'testsuite')
+        testsuites = TestLoader().discover(path.join(BASE_DIR, path_to_tests))
+        TextTestRunner(verbosity=1).run(testsuites)
+
 
 DESCRIPTION = open(
-    path.join(path.dirname(__file__), 'README.md')
+    path.join(BASE_DIR, 'README.md')
 ).read().strip()
 
 classifiers = [
@@ -30,5 +62,6 @@ setup(
     install_requires=[
         'pyparsing>=2.0.1',
     ],
+    cmdclass={'test': run_test},
     classifiers=classifiers,
 )
