@@ -59,9 +59,7 @@ setup(
     zip_safe=False,
     platforms='any',
     keywords=['bind', 'named', ],
-    install_requires=[
-        'pyparsing>=2.0.1',
-    ],
+    install_requires=open('requirements.txt').read().splitlines(),
     cmdclass={'test': run_test},
     classifiers=classifiers,
 )
