@@ -42,7 +42,7 @@ LineSeparator = Suppress(Literal(';')).setResultsName('separator_token')
 Comments = Optional(cppStyleComment.setResultsName('comment'))
 opener, closer = Literal('{'), Literal('}')
 
-NameDefinitions = BASE_WORDS.setResultsName('name')
+NameDefinitions = BASE_WORDS.setResultsName('node_type')
 ValDefinitions = OneOrMore(
     QUOTED_WORDS ^
     BASE_WORDS ^
@@ -52,7 +52,7 @@ ValDefinitions = OneOrMore(
 
 def expression_type_detection(st, location_of__matching_substring, toks):
     var = toks[0]
-    cls = StructuresDetection.get(var['name'], UnknowSentence)
+    cls = StructuresDetection.get(var['node_type'], UnknowSentence)
     # if cls is None:
     #     return toks
     v = cls(var)
@@ -77,15 +77,20 @@ NestedVar << (
     Suppress(closer)
 )
 OptionsDefinitions = Group(
-    Keyword('options').setResultsName('name') +
+    Keyword('options').setResultsName('node_type') +
     NestedVar.copy().setResultsName('value')
 ).setResultsName('option-node')
 
 ZoneDefinitions = Group(
-    Keyword('zone').setResultsName('name') +
-    QUOTED_WORDS.setResultsName('zone_name') +
+    Keyword('zone').setResultsName('node_type') +
+    QUOTED_WORDS.setResultsName('name') +
     NestedVar.copy().setResultsName('value')
 ).setResultsName('zone-node')
+
+AclDefinitions = Group(
+    Keyword('acl').setResultsName('node_type')
+)
+
 
 Expressions = OneOrMore(
     ZoneDefinitions |
