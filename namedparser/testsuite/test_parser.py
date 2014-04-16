@@ -19,11 +19,15 @@ class TestTest(unittest.TestCase):
         result = parser.Parser.parseString(text)
         self.assertEqual(result[0].name, 'directory')
         self.assertEqual(result[0].value, '/var/na/named')
+
+        self.assertIsInstance(result[1], structures.UnknowSentence)
         self.assertEqual(result[1].name, 'aaa')
-        self.assertEqual(result[1].value.asList(), ['master'])
+        self.assertEqual(result[1].value, 'master')
+
         self.assertEqual(result[2].name, 'check-names')
         self.assertEqual(result[2].target, 'slave')
         self.assertEqual(str(result[2]), 'check-names slave ignore;')
+
         include_expression = result[3]
         self.assertTrue(isinstance(include_expression, structures.Include))
         self.assertEqual(include_expression['name'], 'include')

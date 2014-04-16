@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import (print_function, division, absolute_import, unicode_literals, )
 
-from operator import concat
-
 
 from pyparsing import ParseResults
 
@@ -29,6 +27,12 @@ class EasyAcceesser(object):
 
 
 # =================
+
+
+class UnknowSentence(ValueDefinitions, EasyAcceesser, dict):
+    def __init__(self, parse_result):
+        assert 'name' in parse_result and 'value' in parse_result
+        super(UnknowSentence, self).__init__(name=parse_result['name'], value=parse_result['value'][0])
 
 
 class Include(QuotedValuePossesiable, EasyAcceesser, dict):
@@ -61,6 +65,7 @@ class DefinitionsContainer(object):
     :warning:
         the handler of setParseAction should not return type of list.
     '''
+
     def __init__(self, var):
         self.values = var
 
