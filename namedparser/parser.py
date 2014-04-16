@@ -29,10 +29,12 @@ from .structures import (
     StructuresDetection,
     UnknowSentence,
     DefinitionsContainer,
+    ValueLists,
 )
 
 
 BASE_STRINGS = alphanums + "-" + "_"
+NETWORK_STRINGS = alphanums + "-" + "_" + '.'  # 適時調整
 BASE_WORDS = Word(BASE_STRINGS)
 QUOTED_WORDS = quotedString.addParseAction(removeQuotes)
 END_OF_WORDS = WordEnd(BASE_STRINGS)
@@ -41,6 +43,13 @@ END_OF_WORDS = WordEnd(BASE_STRINGS)
 LineSeparator = Suppress(Literal(';')).setResultsName('separator_token')
 Comments = Optional(cppStyleComment.setResultsName('comment'))
 opener, closer = Literal('{'), Literal('}')
+
+WORD_LIST = (
+    opener.suppress() +
+    delimitedList(Word(NETWORK_STRINGS), delim=';') +
+    LineSeparator.suppress() +
+    closer.suppress()
+).setParseAction(lambda s, l, t: ValueLists(t))
 
 NameDefinitions = BASE_WORDS.setResultsName('node_type')
 ValDefinitions = OneOrMore(
@@ -88,13 +97,16 @@ ZoneDefinitions = Group(
 ).setResultsName('zone-node')
 
 AclDefinitions = Group(
-    Keyword('acl').setResultsName('node_type')
+    Keyword('acl').setResultsName('node_type') +
+    QUOTED_WORDS.copy().setResultsName('name') +
+    WORD_LIST.copy().setResultsName('value')
 )
 
 
 Expressions = OneOrMore(
     ZoneDefinitions |
     OptionsDefinitions |
+    AclDefinitions |
     VarDefinitions
 )
 

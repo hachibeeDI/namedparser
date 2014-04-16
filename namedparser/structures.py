@@ -79,6 +79,20 @@ class DefinitionsContainer(object):
         return '\n'.join(str(v) for v in self.values)
 
 
+class ValueLists(object):
+    def __init__(self, var):
+        self.values = var
+
+    def __iter__(self):
+        return self.values
+
+    def next(self):
+        return self.values.next()
+
+    def __str__(self):
+        return ';\n'.join(str(v) for v in self.values) + ';'
+
+
 StructuresDetection = {
     'include': Include,
     'directory': Directory,
