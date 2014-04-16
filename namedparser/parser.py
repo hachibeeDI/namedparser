@@ -25,7 +25,10 @@ from pyparsing import (alphanums, cppStyleComment, )
 from pyparsing import (ParseResults, )
 from pyparsing import (ParseException, )
 
-from .structures import StructuresDetection
+from .structures import (
+    StructuresDetection,
+    DefinitionsContainer,
+)
 
 
 BASE_STRINGS = alphanums + "-" + "_"
@@ -59,8 +62,10 @@ VarDefinitions = Group(
 ).setParseAction(expression_type_detection)
 
 
-# NestedVar = nestedExpr(opener='{', closer='}', content=VarDefinitions)
-NestedVar = Forward()
+def expression_type_detection_in_nestedvalues(st, loc, toks):
+    contents = [t for t in toks if not (isinstance(t, basestring) or t == ';')]
+    return DefinitionsContainer(contents)
+NestedVar = Forward().setParseAction(expression_type_detection_in_nestedvalues)
 _NestedContent = (
     VarDefinitions +
     CharsNotIn('{' + '}' + ParserElement.DEFAULT_WHITE_CHARS).setParseAction(lambda t: t[0].strip())
@@ -72,14 +77,14 @@ NestedVar << (
 )
 OptionsDefinitions = Group(
     Keyword('options').setResultsName('name') +
-    NestedVar.copy().setResultsName('values')
-)
+    NestedVar.copy().setResultsName('value')
+).setResultsName('option-node')
 
 ZoneDefinitions = Group(
     Keyword('zone').setResultsName('name') +
     QUOTED_WORDS.setResultsName('zone_name') +
-    NestedVar.copy().setResultsName('values')
-)
+    NestedVar.copy().setResultsName('value')
+).setResultsName('zone-node')
 
 Expressions = OneOrMore(
     ZoneDefinitions |
