@@ -20,9 +20,8 @@ class run_test(Command):
 
     def run(self):
         import sys
-        try:
-            from unittest import (TestLoader, TextTestRunner, )
-        except ImportError:
+        from unittest import (TestLoader, TextTestRunner, )
+        if sys.version_info[1] in [5, 6]:
             try:
                 from unittest2 import (TestLoader, TextTestRunner, )
             except ImportError:
