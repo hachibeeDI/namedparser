@@ -73,6 +73,29 @@ class TestTest(unittest.TestCase):
         self.assertEqual(values_in_zone.values[1].target, 'slave')
         self.assertEqual(values_in_zone.values[1].value, 'ignore')
 
+    def test_acl_vardefinition(self):
+        text = '''
+        acl "acl_test" {
+            1.1.1.1;
+            1.1.1.2;
+            1.1.1.3;
+            1.1.1.4;
+        };
+        aaa master;
+        '''
+        result = parser.Parser.parseString(text)
+        acl_node = result[0]
+        self.assertEqual(acl_node.node_type, 'acl')
+        self.assertEqual(acl_node.name, 'acl_test')
+        values_in_acl = acl_node['value']
+        self.assertEqual(values_in_acl.values[0], '1.1.1.1')
+        self.assertEqual(values_in_acl.values[1], '1.1.1.2')
+        self.assertEqual(str(values_in_acl), '''1.1.1.1;
+1.1.1.2;
+1.1.1.3;
+1.1.1.4;''')
+
+
     def pass_(self):
         from pyparsing import ParseResults
         c = open('./testbase.conf').read()
