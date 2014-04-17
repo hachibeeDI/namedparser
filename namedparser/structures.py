@@ -93,6 +93,10 @@ class DefinitionsContainer(object):
     def __str__(self):
         return '\n'.join(str(v) for v in self.values)
 
+    def search(self, node_type):
+        return [v for v in self.values
+                if v.is_same_nodetype(node_type)]
+
 
 class ValueLists(object):
     def __init__(self, var):
