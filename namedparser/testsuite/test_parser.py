@@ -95,10 +95,10 @@ class TestTest(unittest.TestCase):
 1.1.1.3;
 1.1.1.4;''')
 
-
-    def pass_(self):
+    def test_megrep(self):
         from pyparsing import ParseResults
-        c = open('./testbase.conf').read()
+        from os import path
+        c = open(path.dirname(__file__) + '/resources/named.conf').read()
         # parseFile('./testbase.conf')
         result = parser.Parser.parseString(c)
         # result = p.parseString(c, parseAll=True)
@@ -107,15 +107,16 @@ class TestTest(unittest.TestCase):
             name = r['node_type']
             print('section: {}'.format(name))
             if name == 'options':
-                values = r['values']
-                print('values: {}'.format(r['values']))
-                for v in [v for v in values if isinstance(v, ParseResults)]:
+                values = r['value']
+                print('value: {}'.format(r['value']))
+                for v in [v for v in values if not isinstance(v, basestring)]:
                     print('  {}: {}'.format(v['node_type'], v['value']))
             elif name == 'zone':
-                print('zone_name: {}'.format(r['zone_name']))
-                values = r['values']
-                print('values: {}'.format(r['values']))
-                for v in [v for v in values if isinstance(v, ParseResults)]:
+                print("zone's name: {}".format(r['name']))
+                values = r['value']
+                print('value: {}'.format(r['value']))
+                for v in [v for v in values if not isinstance(v, basestring)]:
                     print('  {}: {}'.format(v['node_type'], v['value']))
             else:
                 print('value: {}'.format(r['value']))
+        self.assertTrue(True)  # expect no error
