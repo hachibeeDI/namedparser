@@ -24,7 +24,7 @@ class TestTest(unittest.TestCase):
         self.assertEqual(result[0].node_type, 'directory')
         self.assertEqual(result[0].value, '/var/na/named')
 
-        self.assertIsInstance(result[1], structures.UnknowSentence)
+        self.assertIsInstance(result[1], structures.UnknowNode)
         self.assertEqual(result[1].node_type, 'aaa')
         self.assertEqual(result[1].value, 'master')
 
@@ -85,15 +85,16 @@ class TestTest(unittest.TestCase):
         '''
         result = parser.Parser.parseString(text)
         acl_node = result[0]
+        print(acl_node)
         self.assertEqual(acl_node.node_type, 'acl')
         self.assertEqual(acl_node.name, 'acl_test')
         values_in_acl = acl_node['value']
         self.assertEqual(values_in_acl.values[0], '1.1.1.1')
         self.assertEqual(values_in_acl.values[1], '1.1.1.2')
-        self.assertEqual(str(values_in_acl), '''1.1.1.1;
-1.1.1.2;
-1.1.1.3;
-1.1.1.4;''')
+        self.assertEqual(
+            str(values_in_acl).replace('\n', '').replace(' ', ''),
+            '''{1.1.1.1;1.1.1.2;1.1.1.3;1.1.1.4;};'''
+        )
 
     def test_megrep(self):
         from pyparsing import ParseResults

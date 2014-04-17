@@ -27,7 +27,7 @@ from pyparsing import (ParseException, )
 
 from .structures import (
     StructuresDetection,
-    UnknowSentence,
+    UnknowNode,
     DefinitionsContainer,
     ValueLists,
 )
@@ -61,7 +61,7 @@ ValDefinitions = OneOrMore(
 
 def expression_type_detection(st, location_of__matching_substring, toks):
     var = toks[0]
-    cls = StructuresDetection.get(var['node_type'], UnknowSentence)
+    cls = StructuresDetection.get(var['node_type'], UnknowNode)
     # if cls is None:
     #     return toks
     v = cls(var)

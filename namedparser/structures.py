@@ -29,10 +29,11 @@ class EasyAcceesser(object):
 # =================
 
 
-class UnknowSentence(ValueDefinitions, EasyAcceesser, dict):
+class UnknowNode(ValueDefinitions, EasyAcceesser, dict):
     def __init__(self, parse_result):
         assert 'node_type' in parse_result and 'value' in parse_result
-        super(UnknowSentence, self).__init__(node_type=parse_result['node_type'], value=parse_result['value'][0])
+        super(UnknowNode, self).__init__(node_type=parse_result['node_type'], value=parse_result['value'][0])
+
 
 
 class Include(QuotedValuePossesiable, EasyAcceesser, dict):
@@ -84,7 +85,7 @@ class ValueLists(object):
         return self.values.__iter__()
 
     def __str__(self):
-        return ';\n'.join(str(v) for v in self.values) + ';'
+        return '{\n' + ';\n'.join(str(v) for v in self.values) + ';\n};'
 
 
 StructuresDetection = {
