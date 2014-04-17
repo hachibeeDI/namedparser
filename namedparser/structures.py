@@ -63,9 +63,9 @@ class Directory(QuotedValuePossesiable, EasyAcceesser, dict):
         super(Directory, self).__init__(node_type=parse_result['node_type'], value=parse_result['value'][0])
 
 
-class CheckName(ValueDefinitions, EasyAcceesser, dict):
+class CheckNames(ValueDefinitions, EasyAcceesser, dict):
     def __init__(self, parse_result):
-        super(CheckName, self).__init__(
+        super(CheckNames, self).__init__(
             node_type=parse_result['node_type'],
             target=parse_result['value'][0],
             value=parse_result['value'][1],
@@ -108,5 +108,5 @@ class ValueLists(object):
 StructuresDetection = {
     'include': Include,
     'directory': Directory,
-    'check-names': CheckName,
+    'check-names': CheckNames,
 }
