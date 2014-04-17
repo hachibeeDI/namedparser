@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import (print_function, division, absolute_import, unicode_literals, )
 
+from os import path
 import sys
 if sys.version_info[1] in [5, 6]:
     import unittest2 as unittest
@@ -85,7 +86,6 @@ class TestTest(unittest.TestCase):
         '''
         result = parser.Parser.parseString(text)
         acl_node = result[0]
-        print(acl_node)
         self.assertEqual(acl_node.node_type, 'acl')
         self.assertEqual(acl_node.name, 'acl_test')
         values_in_acl = acl_node['value']
@@ -96,9 +96,18 @@ class TestTest(unittest.TestCase):
             '''{1.1.1.1;1.1.1.2;1.1.1.3;1.1.1.4;};'''
         )
 
+    def test_search_node_from_groups(self):
+        text = open(path.dirname(__file__) + '/resources/named.conf').read()
+        result = parser.Parser.parseString(text)
+        option_node = result[1]
+        self.assertEqual(option_node.node_type, 'options')
+        values_in_option = option_node.value
+        self.assertIsInstance(values_in_option, structures.DefinitionsContainer)
+        check_names_nodes = list(values_in_option.search('check-names'))
+        self.assertEqual(check_names_nodes[0].target, 'master')
+
     def test_megrep(self):
         from pyparsing import ParseResults
-        from os import path
         c = open(path.dirname(__file__) + '/resources/named.conf').read()
         # parseFile('./testbase.conf')
         result = parser.Parser.parseString(c)
