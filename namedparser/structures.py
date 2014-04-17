@@ -5,12 +5,29 @@ from __future__ import (print_function, division, absolute_import, unicode_liter
 from pyparsing import ParseResults
 
 
+def _camel_to_hyphened(text):
+    letters = list(text)
+    first_letter = letters.pop(0).lower()
+    conv = lambda _s: '-' + _s.lower() if _s.isupper() else _s
+    return first_letter + ''.join([conv(v) for v in letters])
+
+
 class ValueDefinitions(object):
     def __str__(self):
         return '{} {};'.format(self['node_type'], self['value'])
 
     def __repr__(self):
         return self.__str__()
+
+    def is_same_nodetype(self, nodetype):
+        '''
+        this method cannot detect unknown node
+        TODO: unknownもわかったほうがよいかな？
+        '''
+        if isinstance(nodetype, basestring):
+            return _camel_to_hyphened(self.__class__.__name__) == nodetype
+        else:
+            return type(nodetype) == type(self)
 
     def asList(self):
         return [self['node_type'], self['value']]
