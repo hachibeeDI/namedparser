@@ -5,6 +5,16 @@ from __future__ import (print_function, division, absolute_import, unicode_liter
 from pyparsing import ParseResults
 
 
+'''
+===========================
+ノードクラスの命名規則
+===========================
+
+original: lower and hyphened
+class: UpperCamel
+'''
+
+
 def _camel_to_hyphened(text):
     letters = list(text)
     first_letter = letters.pop(0).lower()

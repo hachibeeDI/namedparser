@@ -2,11 +2,7 @@
 from __future__ import (print_function, division, absolute_import, unicode_literals, )
 
 from os import path
-import sys
-if sys.version_info[1] in [5, 6]:
-    import unittest2 as unittest
-else:
-    import unittest
+from helper import unittest
 
 from namedparser import parser
 from namedparser import structures
@@ -39,20 +35,6 @@ class TestTest(unittest.TestCase):
         self.assertEqual(include_expression['value'], 'named.local.conf')
         self.assertEqual(str(include_expression), 'include "named.local.conf";')
 
-    def test_option_definition(self):
-        text = '''
-        options {
-            directory "/var/na/named";
-            check-names slave ignore;
-        };
-        aaa master;
-        '''
-        result = parser.Parser.parseString(text)
-        option_node = result[0]
-        self.assertEqual(option_node.node_type, 'options')
-        values_in_option = option_node['value']
-        self.assertEqual(values_in_option.values[0].node_type, 'directory')
-        self.assertEqual(values_in_option.values[0].value, '/var/na/named')
 
 
     def test_zone_definition(self):
@@ -105,6 +87,27 @@ class TestTest(unittest.TestCase):
         self.assertIsInstance(values_in_option, structures.DefinitionsContainer)
         check_names_nodes = list(values_in_option.search('check-names'))
         self.assertEqual(check_names_nodes[0].target, 'master')
+
+
+class TestOptionsNode(unittest.TestCase):
+
+    def test_option_definition(self):
+        text = '''
+        options {
+            directory "/var/na/named";
+            check-names slave ignore;
+        };
+        aaa master;
+        '''
+        result = parser.Parser.parseString(text)
+        option_node = result[0]
+        self.assertEqual(option_node.node_type, 'options')
+        values_in_option = option_node['value']
+        self.assertEqual(values_in_option.values[0].node_type, 'directory')
+        self.assertEqual(values_in_option.values[0].value, '/var/na/named')
+
+
+class TestSuitably(unittest.TestCase):
 
     def test_megrep(self):
         from pyparsing import ParseResults
