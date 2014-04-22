@@ -96,6 +96,7 @@ class DefinitionsContainer(object):
 
     def __init__(self, var):
         self.values = var
+        self.keys = set(v.node_type for v in var)
 
     def __iter__(self):
         return self.values.__iter__()
@@ -106,6 +107,9 @@ class DefinitionsContainer(object):
     def search(self, node_type):
         return [v for v in self.values
                 if v.is_same_nodetype(node_type)]
+
+    def __contains__(self, node_type):
+        return node_type in self.keys
 
 
 class ValueLists(object):
