@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import (print_function, division, absolute_import, unicode_literals, )
 
+import sys
 from os import path
 from setuptools import setup, Command
 
 
 BASE_DIR = path.dirname(__file__)
+
+IS_OLD_PYTHON2 = sys.version_info[1] in [5, 6]
 
 
 class run_test(Command):
@@ -19,9 +22,8 @@ class run_test(Command):
         pass
 
     def run(self):
-        import sys
         from unittest import (TestLoader, TextTestRunner, )
-        if sys.version_info[1] in [5, 6]:
+        if IS_OLD_PYTHON2:
             try:
                 from unittest2 import (TestLoader, TextTestRunner, )
             except ImportError:
@@ -43,6 +45,11 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
+
+REQUIRE_MODULES = open('requirements.txt').read().splitlines()
+if IS_OLD_PYTHON2:
+    REQUIRE_MODULES.append('unittest2')
+
 setup(
     name='namedparser',
     version='0.0.1-dev',
@@ -58,7 +65,7 @@ setup(
     zip_safe=False,
     platforms='any',
     keywords=['bind', 'named', ],
-    install_requires=open('requirements.txt').read().splitlines(),
+    install_requires=REQUIRE_MODULES,
     cmdclass={'test': run_test},
     classifiers=classifiers,
 )
