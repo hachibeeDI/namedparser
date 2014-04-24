@@ -100,7 +100,7 @@ AclDefinitions = Group(
     Keyword('acl').setResultsName('node_type') +
     QUOTED_WORDS.copy().setResultsName('name') +
     WORD_LIST.copy().setResultsName('value')
-)
+).setResultsName('acl-node')
 
 
 Expressions = OneOrMore(
@@ -111,7 +111,7 @@ Expressions = OneOrMore(
 )
 
 Parser = OneOrMore(
-        Comments +
-        Expressions +
-        LineSeparator
-    )
+    Comments +
+    Expressions +
+    LineSeparator
+)

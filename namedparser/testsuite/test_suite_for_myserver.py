@@ -47,8 +47,7 @@ class TestOptionsNode(unittest.TestCase):
             directory "/var/na/named";
             check-names slave ignore;
             hoge fooo;
-        };
-        ''')
+        };''')
         invalid_options_value = invalid_node[0].value
         values_not_contained = [req for req in TestOptionsNode.REQUIRE_NODE_TYPES if req not in invalid_options_value]
         self.assertNotEqual(values_not_contained, [])
@@ -63,11 +62,26 @@ class TestOptionsNode(unittest.TestCase):
             directory "/var/na/named";
             check-names slave ignore;
             hoge fooo;
-        };
-        ''')
+        };''')
         invalid_options_value = invalid_node[0].value
-        values_not_contained = [var
-                                for var in invalid_options_value
-                                if var.node_type not in TestOptionsNode.REQUIRE_NODE_TYPES
-                                ]
+        values_not_contained = [
+            var for var in invalid_options_value
+            if var.node_type not in TestOptionsNode.REQUIRE_NODE_TYPES
+        ]
         self.assertNotEqual(values_not_contained, [])
+
+
+class TestZoneNode(unittest.TestCase):
+    REQUIRE_NODE_TYPES = (
+        'type',
+        'max-journal-size',
+    )
+    VALID_NODE_TYPES = REQUIRE_NODE_TYPES + (
+        'masters',  # zonetypeがslaveのとき
+        'forwarders',  # zonetypeがforwardのとき
+        'file',  # zonetypeがforward以外のとき
+        'also-notify',  # zonetypeがmasterのとき
+        'allow-update',  # zonetypeがmasterのとき
+        'allow-transfer',  # allow-transferが空じゃなければ
+        'allow-query',  # allow-queryが空じゃなければ
+    )
