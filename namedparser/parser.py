@@ -110,7 +110,7 @@ Expressions = OneOrMore(
     VarDefinitions
 )
 
-Parser = OneOrMore(
+_Parser = OneOrMore(
     Comments +
     Expressions +
     LineSeparator
