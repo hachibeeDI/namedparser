@@ -4,7 +4,7 @@ from __future__ import (print_function, division, absolute_import, unicode_liter
 from os import path
 from helper import unittest
 
-from namedparser import parser
+from namedparser import Parser
 from namedparser import structures
 
 
@@ -17,7 +17,7 @@ class TestBase(unittest.TestCase):
             check-names slave ignore;
             include "named.local.conf";
         '''
-        result = parser.Parser.parseString(text)
+        result = Parser.parse_string(text)
         self.assertEqual(result[0].node_type, 'directory')
         self.assertEqual(result[0].value, '/var/na/named')
 
@@ -45,7 +45,7 @@ class TestBase(unittest.TestCase):
         };
         aaa master;
         '''
-        result = parser.Parser.parseString(text)
+        result = Parser.parse_string(text)
         acl_node = result[0]
         self.assertEqual(acl_node.node_type, 'acl')
         self.assertEqual(acl_node.name, 'acl_test')
@@ -59,7 +59,7 @@ class TestBase(unittest.TestCase):
 
     def test_search_node_from_groups(self):
         text = open(path.dirname(__file__) + '/resources/named.conf').read()
-        result = parser.Parser.parseString(text)
+        result = Parser.parse_string(text)
         option_node = result[1]
         self.assertEqual(option_node.node_type, 'options')
         values_in_option = option_node.value
@@ -71,7 +71,7 @@ class TestBase(unittest.TestCase):
     def test_search_nodes(self):
         with open(path.dirname(__file__) + '/resources/named.conf') as f:
             text = f.read()
-        result = parser.Parser.parseString(text)
+        result = Parser.parse_string(text)
         options = result.search('options')
         self.assertEqual(options[0].node_type, 'options')
         _ = result.search('foo')
@@ -89,7 +89,7 @@ class TestOptionsNode(unittest.TestCase):
         };
         aaa master;
         '''
-        result = parser.Parser.parseString(text)
+        result = Parser.parse_string(text)
         option_node = result[0]
         self.assertEqual(option_node.node_type, 'options')
         values_in_option = option_node['value']
@@ -107,7 +107,7 @@ class TestZoneNode(unittest.TestCase):
         };
         aaa master;
         '''
-        result = parser.Parser.parseString(text)
+        result = Parser.parse_string(text)
         zone_node = result[0]
         self.assertEqual(zone_node.node_type, 'zone')
         self.assertEqual(zone_node.name, 'zone_name')
@@ -125,8 +125,8 @@ class TestSuitably(unittest.TestCase):
     #     from pyparsing import ParseResults
     #     c = open(path.dirname(__file__) + '/resources/named.conf').read()
     #     # parseFile('./testbase.conf')
-    #     result = parser.Parser.parseString(c)
-    #     # result = p.parseString(c, parseAll=True)
+    #     result = parser.Parser.parse_string(c)
+    #     # result = p.parse_string(c, parseAll=True)
     #     for r in [r for r in result if isinstance(r, ParseResults)]:
     #         print('- = - = - = - = - = -')
     #         name = r['node_type']
