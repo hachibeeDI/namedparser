@@ -24,7 +24,7 @@ def _camel_to_hyphened(text):
 
 class ValueDefinitions(object):
     def __str__(self):
-        return '{} {};'.format(self['node_type'], self['value'])
+        return '{0} {1};'.format(self['node_type'], self['value'])
 
     def __repr__(self):
         return self.__str__()
@@ -45,7 +45,7 @@ class ValueDefinitions(object):
 
 class QuotedValuePossesiable(ValueDefinitions):
     def __str__(self):
-        return '{} "{}";'.format(self['node_type'], self['value'])
+        return '{0} "{1}";'.format(self['node_type'], self['value'])
 
 
 class EasyAcceesser(object):
@@ -82,7 +82,7 @@ class CheckNames(ValueDefinitions, EasyAcceesser, dict):
         )
 
     def __str__(self):
-        return '{} {} {};'.format(self['node_type'], self['target'], self['value'], )
+        return '{0} {1} {2};'.format(self['node_type'], self['target'], self['value'], )
 
     def asList(self):
         return [self['node_type'], self['target'], self['value']]
