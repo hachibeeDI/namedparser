@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import (print_function, division, absolute_import, unicode_literals, )
 
-
 from pyparsing import ParseResults
 
 
@@ -55,31 +54,54 @@ class EasyAcceesser(object):
 
 # =================
 
+def _detect_firstvalue(var):
+    if isinstance(var, ParseResults):
+        return var[0]
+    if isinstance(var, basestring):
+        return var
+    return var[0]
+
 
 class UnknowNode(ValueDefinitions, EasyAcceesser, dict):
     def __init__(self, parse_result):
         assert 'node_type' in parse_result and 'value' in parse_result
-        super(UnknowNode, self).__init__(node_type=parse_result['node_type'], value=parse_result['value'][0])
+        super(UnknowNode, self).__init__(
+            node_type=parse_result['node_type'],
+            value=_detect_firstvalue(parse_result['value'])
+        )
 
 
 
 class Include(QuotedValuePossesiable, EasyAcceesser, dict):
     def __init__(self, parse_result):
-        super(Include, self).__init__(node_type=parse_result['node_type'], value=parse_result['value'][0])
+        super(Include, self).__init__(
+            node_type=parse_result['node_type'],
+            value=_detect_firstvalue(parse_result['value']),
+        )
 
 
 class Directory(QuotedValuePossesiable, EasyAcceesser, dict):
     def __init__(self, parse_result):
-        super(Directory, self).__init__(node_type=parse_result['node_type'], value=parse_result['value'][0])
+        super(Directory, self).__init__(
+            node_type=parse_result['node_type'],
+            value=_detect_firstvalue(parse_result['value']),
+        )
 
 
 class CheckNames(ValueDefinitions, EasyAcceesser, dict):
     def __init__(self, parse_result):
-        super(CheckNames, self).__init__(
-            node_type=parse_result['node_type'],
-            target=parse_result['value'][0],
-            value=parse_result['value'][1],
-        )
+        if isinstance(parse_result, self.__class__):
+            super(CheckNames, self).__init__(
+                node_type=parse_result['node_type'],
+                target=parse_result['target'],
+                value=parse_result['value'],
+            )
+        else:
+            super(CheckNames, self).__init__(
+                node_type=parse_result['node_type'],
+                target=parse_result['value'][0],
+                value=parse_result['value'][1],
+            )
 
     def __str__(self):
         return '{0} {1} {2};'.format(self['node_type'], self['target'], self['value'], )
@@ -90,7 +112,7 @@ class CheckNames(ValueDefinitions, EasyAcceesser, dict):
 
 class Options(ValueDefinitions, EasyAcceesser, dict):
     def __init__(self, parse_result):
-        assert parse_result.node_type == 'options'
+        assert parse_result['node_type'] == 'options'
         super(Options, self).__init__(
             node_type=parse_result['node_type'],
             value=parse_result['value'],
