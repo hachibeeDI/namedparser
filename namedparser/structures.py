@@ -21,6 +21,20 @@ def _camel_to_hyphened(text):
     return first_letter + ''.join([conv(v) for v in letters])
 
 
+class Results(object):
+    ''' Wrapper of pyparsing.ParseResults
+    '''
+    def __init__(self, parse_result):
+        self.values = parse_result
+
+    def __getitem__(self, k):
+        return self.values[k]
+
+    def search(self, node_type):
+        return [v for v in self.values
+                if hasattr(v, 'is_same_nodetype') and v.is_same_nodetype(node_type)]
+
+
 class ValueDefinitions(object):
     def __str__(self):
         return '{0} {1};'.format(self['node_type'], self['value'])
