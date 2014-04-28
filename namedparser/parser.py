@@ -7,9 +7,7 @@ from pyparsing import (
     Literal,
     Keyword,
     OneOrMore,
-    ZeroOrMore,
     Group,
-    LineEnd,
     WordEnd,
     Suppress,
     Forward,
@@ -17,19 +15,17 @@ from pyparsing import (
     CharsNotIn,
     QuotedString,
     quotedString,
-    nestedExpr,
     delimitedList,
     removeQuotes,
 )
 from pyparsing import (alphanums, cppStyleComment, )
-from pyparsing import (ParseResults, )
-from pyparsing import (ParseException, )
+# from pyparsing import (ParseResults, )
+# from pyparsing import (ParseException, )
 
-from .structures import (
-    StructuresDetection,
-    UnknowNode,
-    DefinitionsContainer,
-    ValueLists,
+from ._actions import (
+    valuelists_detection,
+    expression_type_detection,
+    expression_type_detection_in_nestedvalues,
 )
 
 
@@ -49,7 +45,7 @@ WORD_LIST = (
     delimitedList(Word(NETWORK_STRINGS), delim=';') +
     LineSeparator.suppress() +
     closer.suppress()
-).setParseAction(lambda s, l, t: ValueLists(t))
+).setParseAction(valuelists_detection)
 
 NameDefinitions = BASE_WORDS.setResultsName('node_type')
 ValDefinitions = OneOrMore(
@@ -59,22 +55,11 @@ ValDefinitions = OneOrMore(
 ).setResultsName('value')
 
 
-def expression_type_detection(st, location_of__matching_substring, toks):
-    var = toks[0]
-    cls = StructuresDetection.get(var['node_type'], UnknowNode)
-    # if cls is None:
-    #     return toks
-    v = cls(var)
-    return v
-
 VarDefinitions = Group(
     NameDefinitions + ValDefinitions
 ).setParseAction(expression_type_detection)
 
 
-def expression_type_detection_in_nestedvalues(st, loc, toks):
-    contents = [t for t in toks if not (isinstance(t, basestring) or t == ';')]
-    return DefinitionsContainer(contents)
 NestedVar = Forward().setParseAction(expression_type_detection_in_nestedvalues)
 _NestedContent = (
     VarDefinitions +
@@ -108,7 +93,7 @@ Expressions = OneOrMore(
     OptionsDefinitions |
     AclDefinitions |
     VarDefinitions
-)
+).setParseAction(expression_type_detection)
 
 _Parser = OneOrMore(
     Comments +
