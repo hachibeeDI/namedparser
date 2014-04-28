@@ -70,7 +70,6 @@ class TestBase(unittest.TestCase):
         check_names_nodes = list(values_in_option.search('check-names'))
         self.assertEqual(check_names_nodes[0].target, 'master')
 
-    @unittest.expectedFailure
     def test_search_nodes(self):
         result = self.prepared_named
         options = result.search('options')
