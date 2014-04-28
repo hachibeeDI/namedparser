@@ -85,3 +85,18 @@ class TestZoneNode(unittest.TestCase):
         'allow-transfer',  # allow-transferが空じゃなければ
         'allow-query',  # allow-queryが空じゃなければ
     )
+
+    def setUp(self):
+        with open(path.dirname(__file__) + '/resources/named.conf') as f:
+            text = f.read()
+        self.result = Parser.parse_string(text)
+
+
+    def test_has_minimum_requirement(self):
+        zones = self.result.search('zone')
+        first_node = zones[0]
+        values_not_contained = [
+            req_type for req_type in TestZoneNode.REQUIRE_NODE_TYPES
+            if req_type not in first_node.value
+        ]
+        self.assertEqual(values_not_contained, [])
