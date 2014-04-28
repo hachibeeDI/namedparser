@@ -88,6 +88,20 @@ class CheckNames(ValueDefinitions, EasyAcceesser, dict):
         return [self['node_type'], self['target'], self['value']]
 
 
+class Options(ValueDefinitions, EasyAcceesser, dict):
+    def __init__(self, parse_result):
+        assert parse_result.node_type == 'options'
+        super(Options, self).__init__(
+            node_type=parse_result['node_type'],
+            value=parse_result['value'],
+        )
+
+    def __str__(self):
+        v = str(self['value'])
+        return 'options {\n' + v + '\n};'
+
+
+
 class DefinitionsContainer(object):
     '''
     :warning:
