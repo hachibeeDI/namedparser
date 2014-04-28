@@ -9,6 +9,10 @@ from namedparser import structures
 
 
 class TestBase(unittest.TestCase):
+    def setUp(self):
+        with open(path.dirname(__file__) + '/resources/named.conf') as f:
+            text = f.read()
+        self.prepared_named = Parser.parse_string(text)
 
     def test_basic_vardefinition(self):
         text = '''
@@ -58,8 +62,7 @@ class TestBase(unittest.TestCase):
         )
 
     def test_search_node_from_groups(self):
-        text = open(path.dirname(__file__) + '/resources/named.conf').read()
-        result = Parser.parse_string(text)
+        result = self.prepared_named
         option_node = result[1]
         self.assertEqual(option_node.node_type, 'options')
         values_in_option = option_node.value
@@ -69,14 +72,11 @@ class TestBase(unittest.TestCase):
 
     @unittest.expectedFailure
     def test_search_nodes(self):
-        with open(path.dirname(__file__) + '/resources/named.conf') as f:
-            text = f.read()
-        result = Parser.parse_string(text)
+        result = self.prepared_named
         options = result.search('options')
         self.assertEqual(options[0].node_type, 'options')
         _ = result.search('foo')
         self.assertEqual(_, [])
-
 
 
 class TestOptionsNode(unittest.TestCase):
