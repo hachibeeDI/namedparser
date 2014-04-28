@@ -1,9 +1,7 @@
 language: python
 python:
-  - "2.5"
   - "2.6"
   - "2.7"
   - "3.3"
-  - "3.4"
-install: "pip install -r requirements-dev.txt"
+install: "python setup.py requires > _reqs.txt && pip install -r _reqs.txt && rm _reqs.txt"
 script: python setup.py test
