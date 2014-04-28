@@ -126,6 +126,39 @@ class Options(ValueDefinitions, EasyAcceesser, dict):
         return self.value.search(node_type)
 
 
+class Zone(ValueDefinitions, EasyAcceesser, dict):
+    def __init__(self, parse_result):
+        assert parse_result['node_type'] == 'zone'
+        super(Zone, self).__init__(
+            node_type=parse_result['node_type'],
+            name=parse_result['name'],
+            value=parse_result['value'],
+        )
+
+    def __str__(self):
+        v = str(self['value'])
+        return 'zone {\n' + v + '\n};'
+
+    def search(self, node_type):
+        return self.value.search(node_type)
+
+
+class Acl(ValueDefinitions, EasyAcceesser, dict):
+    def __init__(self, parse_result):
+        super(Acl, self).__init__(
+            node_type=parse_result['node_type'],
+            name=parse_result['name'],
+            value=parse_result['value'],
+        )
+
+    def __str__(self):
+        v = str(self['value'])
+        return 'acl {\n' + v + '\n};'
+
+    def search(self, node_type):
+        return self.value.search(node_type)
+
+
 class DefinitionsContainer(object):
     '''
     :warning:
@@ -161,8 +194,14 @@ class ValueLists(object):
         return '{\n' + ';\n'.join(str(v) for v in self.values) + ';\n};'
 
 
-StructuresDetection = {
-    'include': Include,
-    'directory': Directory,
-    'check-names': CheckNames,
-}
+StructuresDetection = dict(
+    (_camel_to_hyphened(obj.__name__), obj)
+    for obj in [
+        Include,
+        Directory,
+        CheckNames,
+        Options,
+        Zone,
+        Acl,
+    ]
+)
