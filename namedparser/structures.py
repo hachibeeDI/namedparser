@@ -100,6 +100,8 @@ class Options(ValueDefinitions, EasyAcceesser, dict):
         v = str(self['value'])
         return 'options {\n' + v + '\n};'
 
+    def search(self, node_type):
+        return self.value.search(node_type)
 
 
 class DefinitionsContainer(object):

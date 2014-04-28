@@ -96,6 +96,25 @@ class TestOptionsNode(unittest.TestCase):
         self.assertEqual(values_in_option.values[0].node_type, 'directory')
         self.assertEqual(values_in_option.values[0].value, '/var/na/named')
 
+    def test_stringfy(self):
+        text = '''
+        options {
+            directory "/var/na/named";
+            check-names slave ignore;
+        };
+        aaa master;
+        '''
+        result = Parser.parse_string(text)
+        option_node = result[0]
+        self.assertEqual(
+            str(option_node).replace(' ', '').replace('\n', ''),
+            '''options {
+                directory "/var/na/named";
+                check-names slave ignore;
+            };'''.replace(' ', '').replace('\n', '')
+        )
+
+
 
 class TestZoneNode(unittest.TestCase):
 
