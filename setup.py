@@ -80,7 +80,7 @@ classifiers = [
 
 setup(
     name='namedparser',
-    version='0.0.1-dev',
+    version='0.0.1',
     author='OGURA_Daiki',
     author_email='8hachibee125@gmail.com',
     url='https://github.com/hachibeeDI/namedparser',
