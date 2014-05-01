@@ -87,10 +87,7 @@ class TestZoneNode(unittest.TestCase):
     )
 
     def setUp(self):
-        with open(path.dirname(__file__) + '/resources/named.conf') as f:
-            text = f.read()
-        self.result = Parser.parse_string(text)
-
+        self.result = Parser.parse_file(path.dirname(__file__) + '/resources/named.conf')
 
     def test_has_minimum_requirement(self):
         zones = self.result.search('zone')
