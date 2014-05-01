@@ -4,7 +4,11 @@ from __future__ import (print_function, division, absolute_import, unicode_liter
 import sys
 from os import path
 
-from setuptools import setup, Command
+from setuptools import (
+    setup,
+    find_packages,
+    Command,
+)
 
 
 BASE_DIR = path.dirname(__file__)
@@ -86,10 +90,8 @@ setup(
     url='https://github.com/hachibeeDI/namedparser',
     description='Read name-daemon configuration files like the bind',
     long_description=DESCRIPTION,
-    packages=['namedparser', ],
+    packages=find_packages(),
     license="MIT",
-    include_package_data=True,
-    entry_points='',
     zip_safe=False,
     platforms='any',
     keywords=['bind', 'named', ],
