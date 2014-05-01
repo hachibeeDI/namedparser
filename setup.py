@@ -10,7 +10,7 @@ from setuptools import setup, Command
 BASE_DIR = path.dirname(__file__)
 
 IS_OLD_PYTHON2 = sys.version_info[1] in [5, 6]
-REQUIRE_MODULES = open('_requirements.txt').read().splitlines()
+REQUIRE_MODULES = open('requirements.txt').read().splitlines()
 if IS_OLD_PYTHON2:
     REQUIRE_MODULES.append('unittest2')
 
@@ -80,7 +80,7 @@ classifiers = [
 
 setup(
     name='namedparser',
-    version='0.0.1',
+    version='0.0.2',
     author='OGURA_Daiki',
     author_email='8hachibee125@gmail.com',
     url='https://github.com/hachibeeDI/namedparser',
