@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import (print_function, division, absolute_import, unicode_literals, )
+from __future__ import (print_function, division, absolute_import, )
 
 import sys
 from os import path
@@ -90,7 +90,10 @@ setup(
     url='https://github.com/hachibeeDI/namedparser',
     description='Read name-daemon configuration files like the bind',
     long_description=DESCRIPTION,
-    packages=find_packages(),
+    packages=find_packages('namedparser'),
+    package_dir={'': 'namedparser'},
+    include_package_data=True,
+    entry_points='',
     license="MIT",
     zip_safe=False,
     platforms='any',
