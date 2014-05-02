@@ -24,11 +24,15 @@ def _camel_to_hyphened(text):
 class Results(object):
     ''' Wrapper of pyparsing.ParseResults
     '''
+
     def __init__(self, parse_result):
         self.values = parse_result
 
     def __getitem__(self, k):
         return self.values[k]
+
+    def __str__(self):
+        return '\n'.join(str(v) for v in self.values)
 
     def search(self, node_type):
         return [v for v in self.values
