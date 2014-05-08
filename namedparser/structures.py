@@ -88,6 +88,9 @@ class UnknowNode(ValueDefinitions, EasyAcceesser, dict):
             value=_detect_firstvalue(parse_result['value'])
         )
 
+    def is_same_nodetype(self, nodetype):
+        ''' '''
+        return self.node_type == nodetype
 
 
 class Include(QuotedValuePossesiable, EasyAcceesser, dict):
