@@ -163,6 +163,9 @@ class Zone(ValueDefinitions, EasyAcceesser, dict):
     def search(self, node_type):
         return self.value.search(node_type)
 
+    def __contains__(self, node_type):
+        return node_type in self.value.keys
+
 
 class Acl(ValueDefinitions, EasyAcceesser, dict):
     def __init__(self, parse_result):
