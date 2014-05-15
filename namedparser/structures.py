@@ -109,6 +109,22 @@ class Directory(QuotedValuePossesiable, EasyAcceesser, dict):
         )
 
 
+class Algorithm(ValueDefinitions, EasyAcceesser, dict):
+    def __init__(self, parse_result):
+        super(Algorithm, self).__init__(
+            node_type=parse_result['node_type'],
+            value=_detect_firstvalue(parse_result['value']),
+        )
+
+
+class Secret(QuotedValuePossesiable, EasyAcceesser, dict):
+    def __init__(self, parse_result):
+        super(Secret, self).__init__(
+            node_type=parse_result['node_type'],
+            value=_detect_firstvalue(parse_result['value']),
+        )
+
+
 class CheckNames(ValueDefinitions, EasyAcceesser, dict):
     def __init__(self, parse_result):
         if isinstance(parse_result, self.__class__):
@@ -165,6 +181,21 @@ class Zone(ValueDefinitions, EasyAcceesser, dict):
 
     def __contains__(self, node_type):
         return node_type in self.value.keys
+
+
+class Key(ValueDefinitions, EasyAcceesser, dict):
+    def __init__(self, parse_result):
+        value = parse_result['value']
+        super(Key, self).__init__(
+            node_type=parse_result['node_type'],
+            name=parse_result['name'],
+            algorithm=value.search('algorithm')[0],
+            secret=value.search('secret')[0],
+        )
+
+    def __str__(self):
+        v = str(self['value'])
+        return 'options {\n' + v + '\n};'
 
 
 class Acl(ValueDefinitions, EasyAcceesser, dict):
@@ -226,6 +257,9 @@ StructuresDetection = dict(
         CheckNames,
         Options,
         Zone,
+        Key,
+        Algorithm,
+        Secret,
         Acl,
     ]
 )

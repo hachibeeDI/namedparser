@@ -81,6 +81,12 @@ ZoneDefinitions = Group(
     NestedVar.copy().setResultsName('value')
 ).setResultsName('zone-node')
 
+KeyDefinitions = Group(
+    Keyword('key').setResultsName('node_type') +
+    QUOTED_WORDS.setResultsName('name') +
+    NestedVar.copy().setResultsName('value')
+).setResultsName('key-node')
+
 AclDefinitions = Group(
     Keyword('acl').setResultsName('node_type') +
     QUOTED_WORDS.copy().setResultsName('name') +
@@ -90,6 +96,7 @@ AclDefinitions = Group(
 
 Expressions = OneOrMore(
     ZoneDefinitions |
+    KeyDefinitions |
     OptionsDefinitions |
     AclDefinitions |
     VarDefinitions
