@@ -32,7 +32,7 @@ class P(object):
         name_of_calling = _snake_to_camel(name)
         ret = getattr(_Parser, name_of_calling)
         if name_of_calling.startswith('parse'):
-            return lambda v: Results(ret(v))
+            return lambda *args: Results(ret(*args, parseAll=True))
         return ret
 
 
