@@ -239,14 +239,16 @@ class DefinitionsContainer(object):
 
 
 class ValueLists(object):
-    def __init__(self, var):
+    def __init__(self, var, quot=''):
         self.values = var
+        self.quot = quot
 
     def __iter__(self):
         return self.values.__iter__()
 
     def __str__(self):
-        return '{\n' + ';\n'.join(str(v) for v in self.values) + ';\n};'
+        q = self.quot
+        return '{\n' + ';\n'.join(q + str(v) + q for v in self.values) + ';\n}'
 
 
 StructuresDetection = dict(

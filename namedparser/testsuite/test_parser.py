@@ -58,7 +58,7 @@ class TestBase(unittest.TestCase):
         self.assertEqual(values_in_acl.values[1], '1.1.1.2')
         self.assertEqual(
             str(values_in_acl).replace('\n', '').replace(' ', ''),
-            '''{1.1.1.1;1.1.1.2;1.1.1.3;1.1.1.4;};'''
+            '''{1.1.1.1;1.1.1.2;1.1.1.3;1.1.1.4;}'''
         )
 
     def test_search_node_from_groups(self):
