@@ -11,6 +11,7 @@ from .structures import (
 
 
 valuelists_detection = lambda s, l, t: ValueLists(t)
+quoted_valuelists_detection = lambda s, l, t: ValueLists(t, '"')
 
 
 

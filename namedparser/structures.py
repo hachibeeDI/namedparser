@@ -214,6 +214,44 @@ class Acl(ValueDefinitions, EasyAcceesser, dict):
         return self.value.search(node_type)
 
 
+class Inet(ValueDefinitions, EasyAcceesser, dict):
+    def __init__(self, parse_result):
+        port = parse_result['port']['value'] if 'port' in parse_result.keys() else ''
+        super(Inet, self).__init__(
+            node_type=parse_result['node_type'],
+            ipaddr=parse_result['ipaddr'],
+            port=port,
+            allows=parse_result['allow-section']['value'],
+            keys=parse_result['keys-section']['value'],
+        )
+
+    def __str__(self):
+        port = ''
+        if self['port']:
+            port = 'port ' + self['port']
+        return (
+            'inet ' + self['ipaddr'] + port +
+            ' allow ' + str(self['allows']) +
+            ' keys ' + str(self['keys']) +
+            ';'
+        )
+
+
+class Controls(ValueDefinitions, EasyAcceesser, dict):
+    def __init__(self, parse_result):
+        super(Controls, self).__init__(
+            node_type=parse_result['node_type'],
+            value=parse_result['inet-node'],
+        )
+
+    def __str__(self):
+        v = str(self['value'])
+        return 'controls {\n' + v + '\n};'
+
+    def search(self, node_type):
+        return self.value.search(node_type)
+
+
 class DefinitionsContainer(object):
     '''
     :warning:
@@ -263,5 +301,7 @@ StructuresDetection = dict(
         Algorithm,
         Secret,
         Acl,
+        Inet,
+        Controls,
     ]
 )

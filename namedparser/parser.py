@@ -9,8 +9,8 @@ from pyparsing import (
     OneOrMore,
     Group,
     WordEnd,
-    Suppress,
     Forward,
+    White,
     ParserElement,
     CharsNotIn,
     QuotedString,
@@ -18,12 +18,13 @@ from pyparsing import (
     delimitedList,
     removeQuotes,
 )
-from pyparsing import (alphanums, cppStyleComment, )
+from pyparsing import (nums, alphanums, cppStyleComment, )
 # from pyparsing import (ParseResults, )
 # from pyparsing import (ParseException, )
 
 from ._actions import (
     valuelists_detection,
+    quoted_valuelists_detection,
     expression_type_detection,
     expression_type_detection_in_nestedvalues,
 )
@@ -36,16 +37,26 @@ QUOTED_WORDS = quotedString.addParseAction(removeQuotes)
 END_OF_WORDS = WordEnd(BASE_STRINGS)
 
 
-LineSeparator = Suppress(Literal(';')).setResultsName('separator_token')
+LineSeparator = Literal(';').suppress().setResultsName('separator_token')
 Comments = Optional(cppStyleComment.setResultsName('comment'))
 opener, closer = Literal('{'), Literal('}')
 
+# ex: {1.1.1.1; 2.2.2.2; ...}
 WORD_LIST = (
     opener.suppress() +
     delimitedList(Word(NETWORK_STRINGS), delim=';') +
-    LineSeparator.suppress() +
+    LineSeparator +
     closer.suppress()
 ).setParseAction(valuelists_detection)
+
+QUOTED_WORD_LIST = (
+    opener.suppress() +
+    delimitedList(QUOTED_WORDS, delim=';') +
+    LineSeparator +
+    closer.suppress()
+).setParseAction(quoted_valuelists_detection)
+
+
 
 NameDefinitions = BASE_WORDS.setResultsName('node_type')
 ValDefinitions = OneOrMore(
@@ -66,10 +77,11 @@ _NestedContent = (
     CharsNotIn('{' + '}' + ParserElement.DEFAULT_WHITE_CHARS).setParseAction(lambda t: t[0].strip())
 )
 NestedVar << (
-    Suppress(opener) +
+    opener.suppress() +
     OneOrMore(NestedVar | _NestedContent) +
-    Suppress(closer)
+    closer.suppress()
 )
+
 OptionsDefinitions = Group(
     Keyword('options').setResultsName('node_type') +
     NestedVar.copy().setResultsName('value')
@@ -93,12 +105,36 @@ AclDefinitions = Group(
     WORD_LIST.copy().setResultsName('value')
 ).setResultsName('acl-node')
 
+# 'inet' node is in 'controls'
+_InetDefinitions = Group(
+    Keyword('inet').setResultsName('node_type') +
+    Word(NETWORK_STRINGS).setResultsName('ipaddr') +
+    Optional(
+        Keyword('port') + Word(nums).setResultsName('value')
+    ).setResultsName('port') +
+    Group(
+        Keyword('allow') + WORD_LIST.copy().setResultsName('value')
+    ).setResultsName('allow-section') +
+    Group(
+        Keyword('keys') + QUOTED_WORD_LIST.copy().setResultsName('value')
+    ).setResultsName('keys-section')
+).setParseAction(expression_type_detection)
+
+ControlsDefinitions = Group(
+    Keyword('controls').setResultsName('node_type') +
+    opener.suppress() +
+    _InetDefinitions.setResultsName('inet-node') +
+    LineSeparator +
+    closer.suppress()
+).setResultsName('controls-node')
+
 
 Expressions = OneOrMore(
     ZoneDefinitions |
     KeyDefinitions |
     OptionsDefinitions |
     AclDefinitions |
+    ControlsDefinitions |
     VarDefinitions
 ).setParseAction(expression_type_detection)
 
