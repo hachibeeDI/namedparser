@@ -228,7 +228,7 @@ class Inet(ValueDefinitions, EasyAcceesser, dict):
     def __str__(self):
         port = ''
         if self['port']:
-            port = 'port ' + self['port']
+            port = ' port ' + self['port']
         return (
             'inet ' + self['ipaddr'] + port +
             ' allow ' + str(self['allows']) +
