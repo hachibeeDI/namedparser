@@ -194,8 +194,10 @@ class Key(ValueDefinitions, EasyAcceesser, dict):
         )
 
     def __str__(self):
-        v = str(self['value'])
-        return 'options {\n' + v + '\n};'
+        return 'key {\n' + \
+            'algorithm ' + self['algorithm'] + ';\n' + \
+            'secret ' + self['secret'] + ';\n' + \
+            '};'
 
 
 class Acl(ValueDefinitions, EasyAcceesser, dict):
