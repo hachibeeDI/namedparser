@@ -3,8 +3,8 @@ from __future__ import (print_function, division, absolute_import, unicode_liter
 
 from pyparsing import ParseResults
 
-from namedparser.parser import _Parser
-from namedparser.structures import Results
+from .parser import _Parser
+from .structures import Results
 
 
 def _snake_to_camel(text):
