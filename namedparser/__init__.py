@@ -7,6 +7,11 @@ from .parser import _Parser
 from .structures import Results
 
 
+__all__ = (
+    'Parser',
+)
+
+
 def _snake_to_camel(text):
     '''
     >>> _snake_to_camel('_snake_to_camel')
@@ -37,7 +42,3 @@ class P(object):
 
 
 Parser = P()
-
-__all__ = (
-    'Parser',
-)
