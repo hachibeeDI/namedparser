@@ -46,6 +46,9 @@ class ValueDefinitions(object):
     def __repr__(self):
         return self.__str__()
 
+    def __add__(self, other):
+        return str(self) + str(other)
+
     def is_same_nodetype(self, nodetype):
         '''
         this method cannot detect unknown node
@@ -194,10 +197,12 @@ class Key(ValueDefinitions, EasyAcceesser, dict):
         )
 
     def __str__(self):
-        return 'key {\n' + \
-            'algorithm ' + self['algorithm'] + ';\n' + \
-            'secret ' + self['secret'] + ';\n' + \
+        return '\n'.join([
+            'key {\n',
+            'algorithm ' + str(self['algorithm']) + ';',
+            'secret ' + str(self['secret']) + ';',
             '};'
+        ])
 
 
 class Acl(ValueDefinitions, EasyAcceesser, dict):
