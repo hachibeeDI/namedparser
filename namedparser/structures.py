@@ -177,7 +177,7 @@ class Zone(ValueDefinitions, EasyAcceesser, dict):
 
     def __str__(self):
         v = str(self['value'])
-        return 'zone {\n' + v + '\n};'
+        return 'zone ' + self['name'] + ' {\n' + v + '\n};'
 
     def search(self, node_type):
         return self.value.search(node_type)
