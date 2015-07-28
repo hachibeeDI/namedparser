@@ -25,7 +25,7 @@ def expression_type_detection(st, location_of__matching_substring, toks):
 
 
 def expression_type_detection_in_nestedvalues(st, loc, toks):
-    contents = [t for t in toks if not (isinstance(t, basestring) or t == ';')]
+    contents = [t for t in toks if not (isinstance(t, str) or t == ';')]
     return DefinitionsContainer(contents)
 
 

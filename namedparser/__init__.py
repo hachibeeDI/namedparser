@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import (division, absolute_import, )
 
+from functools import reduce
 from pyparsing import ParseResults
 
 from .parser import _Parser
