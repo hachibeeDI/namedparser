@@ -3,5 +3,8 @@ python:
   - "2.6"
   - "2.7"
   - "3.3"
-install: "python setup.py requires > _reqs.txt && pip install -r _reqs.txt && rm _reqs.txt"
-script: python setup.py test
+install:
+  - python setup.py sdist --formats=gztar -k
+  - find ./dist -iname "*.tar.gz" -print0 | xargs -0 pip install
+script:
+  - python setup.py test
