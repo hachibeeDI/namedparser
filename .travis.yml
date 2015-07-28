@@ -9,6 +9,6 @@ install:
   - find ./dist -iname "*.tar.gz" -print0 | xargs -0 pip install
   - pip install coveralls
 script:
-  - coverage run --source=namedparser setup.py test
+  - coverage run --source=namedparser --omit='namedparser/testsuite/*' setup.py test
 after_success:
   - coveralls
