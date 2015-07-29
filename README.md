@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/hachibeeDI/namedparser.svg?branch=master)](https://travis-ci.org/hachibeeDI/namedparser)
+[![Build Status](https://travis-ci.org/hachibeeDI/namedparser.svg?branch=master)](https://travis-ci.org/hachibeeDI/namedparser) [![Coverage Status](https://coveralls.io/repos/hachibeeDI/namedparser/badge.svg?branch=master&service=github)](https://coveralls.io/github/hachibeeDI/namedparser?branch=master)
 
 # namedparser
 
