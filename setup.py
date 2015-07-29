@@ -39,7 +39,8 @@ class run_test(Command):
                 sys.exit(1)
         path_to_tests = path.join('namedparser', 'testsuite')
         testsuites = TestLoader().discover(path.join(BASE_DIR, path_to_tests))
-        TextTestRunner(verbosity=1).run(testsuites)
+        result = TextTestRunner(verbosity=1).run(testsuites)
+        sys.exit(not result.wasSuccessful())
 
 
 # to suppres verbosity logging message of distutils
@@ -90,9 +91,7 @@ setup(
     url='https://github.com/hachibeeDI/namedparser',
     description='Read name-daemon configuration files like the bind',
     long_description=DESCRIPTION,
-    packages=find_packages('namedparser'),
-    package_dir={'': 'namedparser'},
-    include_package_data=True,
+    packages=find_packages(exclude=['*.testsuite']),
     entry_points='',
     license="MIT",
     zip_safe=False,

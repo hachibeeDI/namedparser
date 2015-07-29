@@ -54,7 +54,7 @@ class ValueDefinitions(object):
         this method cannot detect unknown node
         TODO: unknownもわかったほうがよいかな？
         '''
-        if isinstance(nodetype, basestring):
+        if isinstance(nodetype, str):
             return _camel_to_hyphened(self.__class__.__name__) == nodetype
         else:
             return type(nodetype) == type(self)
@@ -78,7 +78,7 @@ class EasyAcceesser(object):
 def _detect_firstvalue(var):
     if isinstance(var, ParseResults):
         return var[0]
-    if isinstance(var, basestring):
+    if isinstance(var, str):
         return var
     return var[0]
 
@@ -223,7 +223,7 @@ class Acl(ValueDefinitions, EasyAcceesser, dict):
 
 class Inet(ValueDefinitions, EasyAcceesser, dict):
     def __init__(self, parse_result):
-        port = parse_result['port']['value'] if 'port' in parse_result.keys() else ''
+        port = parse_result['port']['value'] if 'port' in list(parse_result.keys()) else ''
         super(Inet, self).__init__(
             node_type=parse_result['node_type'],
             ipaddr=parse_result['ipaddr'],
